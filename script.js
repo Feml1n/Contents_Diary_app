@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 let data = JSON.parse(localStorage.getItem("contents") || "[]");
+let editIndex = -1; // -1 = new entry, >= 0 = editing that index
 
 function saveData() {
     localStorage.setItem("contents", JSON.stringify(data));
@@ -57,6 +58,7 @@ function card(d) {
 
     const genre = d.genre || "-";
     const status = d.status || "-";
+    const idx = data.indexOf(d);
 
     return `<div class="card">
     <b>${d.title}</b><br>
@@ -64,6 +66,10 @@ function card(d) {
     金額: ${d.price || 0}円<br>
     評価: ${d.rating || "-"}<br>
     ${d.review ? "<hr>" + d.review : ""}
+    <div class="card-actions">
+      <button onclick="editItem(${idx})">\u270f\ufe0f 編集</button>
+      <button onclick="deleteItem(${idx})" class="btn-danger">\ud83d\uddd1\ufe0f 削除</button>
+    </div>
   </div>`;
 }
 
@@ -88,7 +94,7 @@ function save() {
 
     let item = {
         title: titleEl.value,
-        genre: genreEl.value,      // ← 明示的にvalueを取得
+        genre: genreEl.value,
         price: Number(priceEl.value),
         status: statusEl.value,
         rating: ratingEl.value,
@@ -100,10 +106,75 @@ function save() {
     if (!item.title) { alert("タイトル必須"); return; }
     if (item.review.length > 300) { alert("レビューは300文字以内"); return; }
 
-    data.push(item);
+    if (editIndex >= 0) {
+        item.created = data[editIndex].created;
+        data[editIndex] = item;
+        editIndex = -1;
+        alert("更新しました");
+    } else {
+        data.push(item);
+        alert("保存しました");
+    }
+
     saveData();
-    alert("保存しました");
-    location.reload();
+    resetForm();
+    show("home");
+}
+
+function editItem(index) {
+    const d = data[index];
+    if (!d) return;
+
+    editIndex = index;
+
+    document.getElementById("title").value = d.title || "";
+    document.getElementById("genre").value = d.genre || "漫画";
+    document.getElementById("price").value = d.price || "";
+    document.getElementById("status").value = d.status || "積み";
+    document.getElementById("rating").value = d.rating || "";
+    document.getElementById("review").value = d.review || "";
+    document.getElementById("date").value = d.date || "";
+
+    document.getElementById("charCount").innerText = (d.review || "").length + " / 300";
+    toggleRating();
+
+    document.getElementById("addHeading").innerText = "コンテンツ編集";
+    document.getElementById("saveBtn").innerText = "更新";
+    document.getElementById("cancelBtn").classList.remove("hidden");
+
+    show("add");
+}
+
+function deleteItem(index) {
+    const d = data[index];
+    if (!d) return;
+    if (!confirm("「" + d.title + "」を削除しますか？")) return;
+
+    data.splice(index, 1);
+    saveData();
+    show("home");
+}
+
+function cancelEdit() {
+    editIndex = -1;
+    resetForm();
+    show("home");
+}
+
+function resetForm() {
+    document.getElementById("title").value = "";
+    document.getElementById("genre").value = "漫画";
+    document.getElementById("price").value = "";
+    document.getElementById("status").value = "積み";
+    document.getElementById("rating").value = "";
+    document.getElementById("review").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("charCount").innerText = "0 / 300";
+    toggleRating();
+
+    document.getElementById("addHeading").innerText = "コンテンツ登録";
+    document.getElementById("saveBtn").innerText = "保存";
+    document.getElementById("cancelBtn").classList.add("hidden");
 }
 
 
