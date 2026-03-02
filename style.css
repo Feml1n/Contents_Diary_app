@@ -339,6 +339,20 @@ canvas {
     background: var(--primary-hover);
 }
 
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px 20px;
+    margin-top: 40px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+footer p {
+    margin: 0;
+}
+
 /* ================================
    Responsive: Tablets (<=768px)
    ================================ */
