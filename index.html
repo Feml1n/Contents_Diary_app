@@ -1,283 +1,158 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<title>コンテンツ消費記録</title>
-<style>body { 
-  font-family: sans-serif; 
-  margin: 0;
-  background:#f4f4f4; 
-}
-
-h1 {
-  margin: 80px 20px 10px 20px;
-}
-
-.nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: #222;
-  padding: 10px;
-  z-index: 1000;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.nav button {
-  margin: 3px;
-  padding: 5px 10px;
-  border: none;
-  background: #444;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.nav button:hover {
-  background: #666;
-}
-
-.card {
-  background:white;
-  padding:10px;
-  margin:5px 20px;
-  border-radius:5px;
-}
-
-.hidden { display:none; }
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>コンテンツ消費記録</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h1>コンテンツ消費記録</h1>
+  <h1>コンテンツ消費記録</h1>
 
-<div class="nav">
-  <button onclick="show('home')">ホーム</button>
-  <button onclick="show('add')">記録</button>
-  <button onclick="showStatus('積み')">消費前</button>
-  <button onclick="showStatus('消費中')">消費中</button>
-  <button onclick="showStatus('消費済')">消費済</button>
-  <button onclick="showStatus('気になる')">気になる</button>
-  <button onclick="show('stats')">グラフ</button>
-</div>
-
-<div id="app">
-
-<!-- ホーム -->
-<div id="home">
-  <h2>最近登録</h2>
-  <div id="recent"></div>
-
-  <h2>ウィッシュリスト</h2>
-  <div id="wishlistPreview"></div>
-
-  <h2>消費データ</h2>
-  <div id="summary"></div>
-</div>
-
-<!-- 記録画面 -->
-<div id="add" class="hidden">
-  <h2>コンテンツ登録</h2>
-  <input id="title" placeholder="タイトル">
-
-  <select id="genre">
-    <option>漫画</option>
-    <option>小説</option>
-    <option>アニメ</option>
-    <option>映画</option>
-    <option>ゲーム</option>
-    <option>音楽</option>
-    <option>ブログ</option>
-  </select>
-
-  <input id="price" type="number" placeholder="金額">
-
-  <select id="status" onchange="toggleRating()">
-    <option>積み</option>
-    <option>消費中</option>
-    <option>消費済</option>
-    <option>気になる</option>
-  </select>
-
-  <div id="ratingBox" class="hidden">
-    <select id="rating">
-      <option value="">評価なし</option>
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
-    </select>
+  <div class="nav">
+    <button onclick="show('home')">ホーム</button>
+    <button onclick="show('add')">記録</button>
+    <button onclick="showStatus('積み')">消費前</button>
+    <button onclick="showStatus('消費中')">消費中</button>
+    <button onclick="showStatus('消費済')">消費済</button>
+    <button onclick="showStatus('気になる')">気になる</button>
+    <button onclick="show('stats')">グラフ</button>
+    <button onclick="show('genres')">ジャンル</button>
+    <button onclick="show('data')">データ管理</button>
   </div>
 
-  <input id="date" type="date">
-  <textarea id="review" maxlength="300" placeholder="レビュー（300文字まで）"
-  style="width:100%; height:100px; margin:5px 0;"></textarea>
-<div id="charCount" style="font-size:12px; color:#666;">0 / 300</div>
+  <div id="app">
+
+    <!-- ホーム -->
+    <div id="home">
+      <h2>最近登録</h2>
+      <div id="recent"></div>
+
+      <h2>ウィッシュリスト</h2>
+      <div id="wishlistPreview"></div>
+
+      <h2>消費データ</h2>
+      <div id="summary"></div>
+    </div>
+
+    <!-- 記録画面 -->
+    <div id="add" class="hidden">
+      <h2>コンテンツ登録</h2>
+      <input id="title" placeholder="タイトル">
+
+      <select id="genre">
+        <option>漫画</option>
+        <option>小説</option>
+        <option>アニメ</option>
+        <option>映画</option>
+        <option>ゲーム</option>
+        <option>音楽</option>
+        <option>ブログ</option>
+      </select>
+
+      <input id="price" type="number" placeholder="金額">
+
+      <select id="status" onchange="toggleRating()">
+        <option>積み</option>
+        <option>消費中</option>
+        <option>消費済</option>
+        <option>気になる</option>
+      </select>
+
+      <div id="ratingBox" class="hidden">
+        <select id="rating">
+          <option value="">評価なし</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+
+      <input id="date" type="date">
+      <textarea id="review" maxlength="300" placeholder="レビュー（300文字まで）"
+        style="width:100%; height:100px; margin:5px 0;"></textarea>
+      <div id="charCount" style="font-size:12px; color:#666;">0 / 300</div>
 
 
-  <button onclick="save()">保存</button>
-</div>
+      <button onclick="save()">保存</button>
+    </div>
 
-<!-- ステータス一覧 -->
-<div id="list" class="hidden">
-  <h2 id="listTitle"></h2>
-  <div id="listContent"></div>
-</div>
+    <!-- ステータス一覧 -->
+    <div id="list" class="hidden">
+      <h2 id="listTitle"></h2>
+      <div id="listContent"></div>
+    </div>
 
-<!-- 統計 -->
-<div id="stats" class="hidden">
-  <h2>消費グラフ</h2>
-  <canvas id="chart" width="300" height="200"></canvas>
-  <div id="totalMoney"></div>
-</div>
+    <!-- 統計 -->
+    <div id="stats" class="hidden">
+      <h2>消費グラフ</h2>
+      <canvas id="chart"></canvas>
+      <div id="totalMoney"></div>
 
-<button id="homeBtn" onclick="show('home')">🏠 ホームに戻る</button>
+      <div style="margin-top: 30px;">
+        <h2>毎日の消費記録</h2>
+        <div class="year-nav">
+          <button onclick="changeHeatmapYear(-1)">◀</button>
+          <span id="heatmapYearLabel" class="year-label"></span>
+          <button onclick="changeHeatmapYear(1)">▶</button>
+        </div>
+        <div class="heatmap-scroll">
+          <canvas id="heatmap"></canvas>
+        </div>
+        <div id="heatmapTooltip"
+          style="display:none; position:fixed; background:#111; color:#fff; padding:6px 10px; border-radius:6px; font-size:12px; pointer-events:none; z-index:9999;">
+        </div>
+      </div>
+    </div>
 
-</div>
+    <!-- ジャンル別 -->
+    <div id="genres" class="hidden">
+      <h2>ジャンル別</h2>
+      <div class="genre-filter">
+        <button onclick="showGenreList('漫画')">漫画</button>
+        <button onclick="showGenreList('小説')">小説</button>
+        <button onclick="showGenreList('アニメ')">アニメ</button>
+        <button onclick="showGenreList('映画')">映画</button>
+        <button onclick="showGenreList('ゲーム')">ゲーム</button>
+        <button onclick="showGenreList('音楽')">音楽</button>
+        <button onclick="showGenreList('ブログ')">ブログ</button>
+      </div>
+      <div id="genreContent"></div>
+    </div>
 
-<script>
+    <!-- データ管理 -->
+    <div id="data" class="hidden">
+      <h2>データ管理</h2>
 
-document.addEventListener("DOMContentLoaded", function(){
-  const review = document.getElementById("review");
-  const charCount = document.getElementById("charCount");
+      <div class="card">
+        <b>バックアップ（エクスポート）</b>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">現在のデータをJSONファイルとしてパソコンやスマホに保存します。
+        </p>
+        <button onclick="exportData()">データをファイルに保存</button>
+      </div>
 
-  review.addEventListener("input", function(){
-    charCount.innerText = review.value.length + " / 300";
-  });
-});
+      <div class="card">
+        <b>復元（インポート）</b>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">
+          保存したJSONファイルを読み込みます。<b>※現在のデータは上書きされます。</b></p>
+        <input type="file" id="importFile" accept=".json" onchange="importData(event)">
+      </div>
+    </div>
 
+    <button id="homeBtn" onclick="show('home')">🏠 ホームに戻る</button>
 
-let data = JSON.parse(localStorage.getItem("contents") || "[]");
+  </div>
 
-function saveData(){
-  localStorage.setItem("contents", JSON.stringify(data));
-}
-
-function show(id){
-  document.querySelectorAll("#app > div")
-    .forEach(d=>d.classList.add("hidden"));
-
-  document.getElementById(id)
-    .classList.remove("hidden");
-
-  if(id==="home") renderHome();
-  if(id==="stats") renderStats();
-}
-
-function showStatus(status){
-  show("list");
-  document.getElementById("listTitle").innerText = status + "一覧";
-
-  let list = data
-    .filter(d => (d.status || "積み") === status)
-    .sort((a,b)=>new Date(b.created)-new Date(a.created));
-
-  document.getElementById("listContent").innerHTML =
-    list.map(d=>card(d)).join("");
-}
-
-
-function card(d){
-
-  const genre = d.genre || "-";
-  const status = d.status || "-";
-
-  return `<div class="card">
-    <b>${d.title}</b><br>
-    ${genre} | ${status}<br>
-    金額: ${d.price || 0}円<br>
-    評価: ${d.rating || "-"}<br>
-    ${d.review ? "<hr>" + d.review : ""}
-  </div>`;
-}
-
-
-
-function toggleRating(){
-  let status = document.getElementById("status").value;
-  document.getElementById("ratingBox").classList.toggle(
-    "hidden", !(status==="消費中" || status==="消費済")
-  );
-}
-
-function save(){
-
-  const titleEl  = document.getElementById("title");
-  const genreEl  = document.getElementById("genre");
-  const priceEl  = document.getElementById("price");
-  const statusEl = document.getElementById("status");
-  const ratingEl = document.getElementById("rating");
-  const reviewEl = document.getElementById("review");
-  const dateEl   = document.getElementById("date");
-
-  let item = {
-    title: titleEl.value,
-    genre: genreEl.value,      // ← 明示的にvalueを取得
-    price: Number(priceEl.value),
-    status: statusEl.value,
-    rating: ratingEl.value,
-    review: reviewEl.value,
-    date: dateEl.value,
-    created: new Date().toISOString()
-  };
-
-  if(!item.title){ alert("タイトル必須"); return; }
-  if(item.review.length > 300){ alert("レビューは300文字以内"); return; }
-
-  data.push(item);
-  saveData();
-  alert("保存しました");
-  location.reload();
-}
-
-
-function renderHome(){
-  let sorted = [...data].sort((a,b)=>new Date(b.created)-new Date(a.created));
-
-  document.getElementById("recent").innerHTML =
-    sorted.slice(0,5).map(d=>card(d)).join("");
-
-  let wish = sorted.filter(d=>d.status==="気になる").slice(0,5);
-  document.getElementById("wishlistPreview").innerHTML =
-    wish.map(d=>card(d)).join("");
-
-  let total = data.reduce((sum,d)=>sum+(d.price||0),0);
-  document.getElementById("summary").innerText =
-    "総登録数: "+data.length+"件 / 総消費金額: "+total+"円";
-}
-
-function renderStats(){
-  let counts = {積み:0, 消費中:0, 消費済:0, 気になる:0};
-
-  data.forEach(d=>{
-    let s = d.status || "積み";
-    if(counts[s] !== undefined){
-      counts[s]++;
-    }
-  });
-
-  let canvas = document.getElementById("chart");
-  let ctx = canvas.getContext("2d");
-  ctx.clearRect(0,0,300,200);
-
-  let keys = Object.keys(counts);
-  keys.forEach((k,i)=>{
-    ctx.fillRect(20, i*40+10, counts[k]*20, 20);
-    ctx.fillText(k+" ("+counts[k]+")", 20, i*40+35);
-  });
-
-  let total = data.reduce((sum,d)=>sum+(d.price||0),0);
-  document.getElementById("totalMoney").innerText =
-    "総消費金額: "+total+"円";
-}
-
-
-renderHome();
-</script>
+  <script src="script.js"></script>
 
 </body>
+
 </html>
