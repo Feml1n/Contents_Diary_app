@@ -58,11 +58,13 @@ function card(d) {
 
     const genre = d.genre || "-";
     const status = d.status || "-";
+    const dateStr = d.date || (d.created ? d.created.slice(0, 10) : "-");
     const idx = data.indexOf(d);
 
     return `<div class="card">
     <b>${d.title}</b><br>
     ${genre} | ${status}<br>
+    日付: ${dateStr}<br>
     金額: ${d.price || 0}円<br>
     評価: ${d.rating || "-"}<br>
     ${d.review ? "<hr>" + d.review : ""}
@@ -188,9 +190,27 @@ function renderHome() {
     document.getElementById("wishlistPreview").innerHTML =
         wish.map(d => card(d)).join("");
 
-    let total = data.reduce((sum, d) => sum + (d.price || 0), 0);
-    document.getElementById("summary").innerText =
-        "総登録数: " + data.length + "件 / 総消費金額: " + total + "円";
+    const now = new Date();
+    const thisYear = now.getFullYear();
+    const thisMonth = now.getMonth();
+
+    const monthItems = data.filter(d => {
+        const dt = new Date(d.date || d.created);
+        return dt.getFullYear() === thisYear && dt.getMonth() === thisMonth;
+    });
+    const yearItems = data.filter(d => {
+        const dt = new Date(d.date || d.created);
+        return dt.getFullYear() === thisYear;
+    });
+
+    const totalAll = data.reduce((s, d) => s + (d.price || 0), 0);
+    const totalMonth = monthItems.reduce((s, d) => s + (d.price || 0), 0);
+    const totalYear = yearItems.reduce((s, d) => s + (d.price || 0), 0);
+
+    document.getElementById("summary").innerHTML =
+        "今月: " + monthItems.length + "件 / " + totalMonth.toLocaleString() + "円<br>" +
+        "今年: " + yearItems.length + "件 / " + totalYear.toLocaleString() + "円<br>" +
+        "総合: " + data.length + "件 / " + totalAll.toLocaleString() + "円";
 }
 
 function renderStats() {
@@ -351,9 +371,45 @@ function renderStats() {
         ctx.fillText("データがありません", 10, donutY + 30);
     }
 
-    let total = data.reduce((sum, d) => sum + (d.price || 0), 0);
+    const now = new Date();
+    const todayStr = now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, "0") + "-" +
+        String(now.getDate()).padStart(2, "0");
+    const thisYear = now.getFullYear();
+    const thisMonth = now.getMonth();
+
+    const todayItems = data.filter(d => {
+        const ds = d.date || (d.created ? d.created.slice(0, 10) : "");
+        return ds === todayStr;
+    });
+    const monthItems = data.filter(d => {
+        const dt = new Date(d.date || d.created);
+        return dt.getFullYear() === thisYear && dt.getMonth() === thisMonth;
+    });
+    const yearItems = data.filter(d => {
+        const dt = new Date(d.date || d.created);
+        return dt.getFullYear() === thisYear;
+    });
+
+    const todayMoney = todayItems.reduce((s, d) => s + (d.price || 0), 0);
+    const monthMoney = monthItems.reduce((s, d) => s + (d.price || 0), 0);
+    const yearMoney = yearItems.reduce((s, d) => s + (d.price || 0), 0);
+    const totalMoney = data.reduce((s, d) => s + (d.price || 0), 0);
+
+    const tsumiCount = counts["積み"] || 0;
+    const consumedCount = counts["消費済"] || 0;
+
+    document.getElementById("statsSummary").innerHTML =
+        '<div class="stats-grid">' +
+        '<div class="stats-item"><span class="stats-label">今日</span><span class="stats-value">' + todayItems.length + '件 / ' + todayMoney.toLocaleString() + '円</span></div>' +
+        '<div class="stats-item"><span class="stats-label">今月</span><span class="stats-value">' + monthItems.length + '件 / ' + monthMoney.toLocaleString() + '円</span></div>' +
+        '<div class="stats-item"><span class="stats-label">今年</span><span class="stats-value">' + yearItems.length + '件 / ' + yearMoney.toLocaleString() + '円</span></div>' +
+        '<div class="stats-item"><span class="stats-label">累計 積み</span><span class="stats-value">' + tsumiCount + '件</span></div>' +
+        '<div class="stats-item"><span class="stats-label">累計 消費済</span><span class="stats-value">' + consumedCount + '件</span></div>' +
+        '</div>';
+
     document.getElementById("totalMoney").innerText =
-        "総消費金額: " + total.toLocaleString() + "円";
+        "総消費金額: " + totalMoney.toLocaleString() + "円";
 
     renderHeatmap();
 }
@@ -600,5 +656,28 @@ function importData(event) {
     };
     reader.readAsText(file);
 }
+
+// ============== ダークモード ==============
+function toggleDarkMode() {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (isDark) {
+        document.documentElement.removeAttribute("data-theme");
+        localStorage.setItem("theme", "light");
+        document.getElementById("darkModeBtn").innerText = "🌙";
+    } else {
+        document.documentElement.setAttribute("data-theme", "dark");
+        localStorage.setItem("theme", "dark");
+        document.getElementById("darkModeBtn").innerText = "☀️";
+    }
+}
+
+// ダークモード初期化
+(function initTheme() {
+    const saved = localStorage.getItem("theme");
+    if (saved === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        document.getElementById("darkModeBtn").innerText = "☀️";
+    }
+})();
 
 renderHome();

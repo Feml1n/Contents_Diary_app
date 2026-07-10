@@ -109,6 +109,7 @@
     <div id="stats" class="hidden">
       <h2>消費グラフ</h2>
       <canvas id="chart"></canvas>
+      <div id="statsSummary"></div>
       <div id="totalMoney"></div>
 
       <div style="margin-top: 30px;">
@@ -161,8 +162,11 @@
       </div>
     </div>
 
-    <button id="homeBtn" onclick="show('home')">🏠 ホームに戻る</button>
+  </div>
 
+  <div class="bottom-actions">
+    <button id="homeBtn" onclick="show('home')">🏠 ホームに戻る</button>
+    <button id="darkModeBtn" onclick="toggleDarkMode()">🌙</button>
   </div>
 
   <script src="script.js"></script>
