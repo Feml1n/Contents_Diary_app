@@ -58,7 +58,7 @@ function card(d) {
 
     const genre = d.genre || "-";
     const status = d.status || "-";
-    const dateStr = d.date || (d.created ? d.created.slice(0, 10) : "-");
+    const dateStr = d.date || "日付不明";
     const idx = data.indexOf(d);
 
     return `<div class="card">
@@ -195,11 +195,13 @@ function renderHome() {
     const thisMonth = now.getMonth();
 
     const monthItems = data.filter(d => {
-        const dt = new Date(d.date || d.created);
+        if (!d.date) return false;
+        const dt = new Date(d.date);
         return dt.getFullYear() === thisYear && dt.getMonth() === thisMonth;
     });
     const yearItems = data.filter(d => {
-        const dt = new Date(d.date || d.created);
+        if (!d.date) return false;
+        const dt = new Date(d.date);
         return dt.getFullYear() === thisYear;
     });
 
@@ -379,15 +381,17 @@ function renderStats() {
     const thisMonth = now.getMonth();
 
     const todayItems = data.filter(d => {
-        const ds = d.date || (d.created ? d.created.slice(0, 10) : "");
-        return ds === todayStr;
+        if (!d.date) return false;
+        return d.date === todayStr;
     });
     const monthItems = data.filter(d => {
-        const dt = new Date(d.date || d.created);
+        if (!d.date) return false;
+        const dt = new Date(d.date);
         return dt.getFullYear() === thisYear && dt.getMonth() === thisMonth;
     });
     const yearItems = data.filter(d => {
-        const dt = new Date(d.date || d.created);
+        if (!d.date) return false;
+        const dt = new Date(d.date);
         return dt.getFullYear() === thisYear;
     });
 
@@ -428,7 +432,7 @@ function renderHeatmap() {
     // Count entries per date for the selected year
     const dateCounts = {};
     data.forEach(d => {
-        const dateStr = d.date || (d.created ? d.created.slice(0, 10) : "");
+        const dateStr = d.date || "";
         if (dateStr && dateStr.startsWith(String(heatmapYear))) {
             dateCounts[dateStr] = (dateCounts[dateStr] || 0) + 1;
         }
